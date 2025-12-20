@@ -121,7 +121,7 @@ class ArchivesState {
         guard hasCompleted && !hasErrors else { return }
 
         Task {
-            try? await Task.sleep(for: .seconds(1.5))
+            try? await Task.sleep(for: .seconds(3))
             NSApplication.shared.terminate(nil)
         }
     }

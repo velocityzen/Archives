@@ -10,17 +10,21 @@ struct ArchiveView: View {
                 idleView
             } else {
                 queueView
+                .safeAreaPadding(.top, 28)
             }
         }
-        .frame(minWidth: 350, minHeight: 200)
-        .background(isTargeted ? Color.accentColor.opacity(0.1) : Color.clear)
-        .overlay(
-            RoundedRectangle(cornerRadius: 8)
-                .strokeBorder(
-                    isTargeted ? Color.accentColor : Color.clear,
-                    style: StrokeStyle(lineWidth: 2, dash: [8])
-                )
-        )
+        .frame(minWidth: 250, minHeight: 200)
+        .background {
+            VisualEffectView(
+                material: .hudWindow,
+                blendingMode: .behindWindow
+            )
+            .overlay(isTargeted ? Color.accentColor.opacity(0.1) : Color.clear)
+            .animation(.easeInOut(duration: 0.2), value: isTargeted)
+        }
+        .ignoresSafeArea(.all)
+        .toolbarBackgroundVisibility(.hidden, for: .windowToolbar)
+        .toolbar(removing: .title)
         .dropDestination(for: URL.self) { urls, _ in
             let supportedUrls = urls.filter { ArchiveRegistry.isSupported(url: $0) }
             guard !supportedUrls.isEmpty else { return false }
@@ -36,6 +40,8 @@ struct ArchiveView: View {
             Image(systemName: "doc.zipper")
                 .font(.system(size: 48))
                 .foregroundStyle(.secondary)
+                .scaleEffect(isTargeted ? 1.15 : 1.0)
+                .animation(.easeInOut(duration: 0.2), value: isTargeted)
             Text("Drop archives to extract")
                 .foregroundStyle(.secondary)
         }
@@ -48,7 +54,6 @@ struct ArchiveView: View {
             if let current = state.currentItem {
                 currentItemView(current)
                     .padding()
-                    .background(Color(nsColor: .controlBackgroundColor))
             }
 
             if state.items.count > 1 {
@@ -62,11 +67,9 @@ struct ArchiveView: View {
                         }
                     }
                 }
-                .frame(maxHeight: 200)
             }
 
             if state.hasCompleted && !state.hasErrors {
-                Divider()
                 HStack {
                     Image(systemName: "checkmark.circle.fill")
                         .foregroundStyle(.green)
@@ -74,7 +77,7 @@ struct ArchiveView: View {
                         .font(.caption)
                         .foregroundStyle(.secondary)
                 }
-                .padding(8)
+                .padding()
             }
         }
     }
@@ -117,41 +120,41 @@ struct ArchiveView: View {
     @ViewBuilder
     private func statusIcon(for status: ArchiveItem.ItemStatus) -> some View {
         switch status {
-        case .pending:
-            Image(systemName: "clock")
-                .foregroundStyle(.secondary)
-        case .extracting:
-            ProgressView()
-                .scaleEffect(0.6)
-        case .success:
-            Image(systemName: "checkmark.circle.fill")
-                .foregroundStyle(.green)
-        case .error:
-            Image(systemName: "xmark.circle.fill")
-                .foregroundStyle(.red)
+            case .pending:
+                Image(systemName: "clock")
+                    .foregroundStyle(.secondary)
+            case .extracting:
+                ProgressView()
+                    .scaleEffect(0.6)
+            case .success:
+                Image(systemName: "checkmark.circle.fill")
+                    .foregroundStyle(.green)
+            case .error:
+                Image(systemName: "xmark.circle.fill")
+                    .foregroundStyle(.red)
         }
     }
 
     @ViewBuilder
     private func statusLabel(for status: ArchiveItem.ItemStatus) -> some View {
         switch status {
-        case .pending:
-            Text("Pending")
-                .font(.caption)
-                .foregroundStyle(.secondary)
-        case .extracting:
-            Text("Extracting...")
-                .font(.caption)
-                .foregroundStyle(.blue)
-        case .success:
-            Text("Done")
-                .font(.caption)
-                .foregroundStyle(.green)
-        case .error(let message):
-            Text(message)
-                .font(.caption)
-                .foregroundStyle(.red)
-                .lineLimit(1)
+            case .pending:
+                Text("Pending")
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
+            case .extracting:
+                Text("Extracting...")
+                    .font(.caption)
+                    .foregroundStyle(.blue)
+            case .success:
+                Text("Done")
+                    .font(.caption)
+                    .foregroundStyle(.green)
+            case .error(let message):
+                Text(message)
+                    .font(.caption)
+                    .foregroundStyle(.red)
+                    .lineLimit(1)
         }
     }
 }

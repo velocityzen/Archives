@@ -1,0 +1,10 @@
+{
+    "indentation": {
+        "spaces": 4,
+    },
+    "indentConditionalCompilationBlocks": false,
+    "indentSwitchCaseLabels": true,
+    "rules": {
+        "AlwaysUseLowerCamelCase": false
+    }
+}

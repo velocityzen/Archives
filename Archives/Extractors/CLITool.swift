@@ -36,7 +36,7 @@ struct CLITool: Codable, Equatable {
         fileExtensions: ["7z"],
         contentTypes: ["org.7-zip.7-zip-archive"],
         arguments: ["x", "-y", "-o{{destination}}", "{{source}}"],
-        installHint: "brew install 7zip"
+        installHint: "brew install 7-zip"
     )
 
     static let unrar = CLITool(
@@ -46,7 +46,7 @@ struct CLITool: Codable, Equatable {
         fileExtensions: ["rar"],
         contentTypes: ["com.rarlab.rar-archive"],
         arguments: ["x", "-y", "{{source}}", "{{destination}}/"],
-        installHint: "brew install unrar"
+        installHint: "brew install rar"
     )
 
     static let tar = CLITool(

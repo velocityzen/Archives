@@ -16,5 +16,9 @@ struct ArchivesApp: App {
                 }
         }
         .windowResizability(.contentSize)
+
+        Settings {
+            SettingsView()
+        }
     }
 }

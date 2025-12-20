@@ -20,6 +20,7 @@ struct ArchiveItem: Identifiable, Equatable {
 @MainActor
 class ArchivesState {
     var items: [ArchiveItem] = []
+    @ObservationIgnored @AppStorage("deleteAfterExtraction") var deleteAfterExtraction = false
     private var isProcessing = false
 
     var currentItem: ArchiveItem? {
@@ -77,10 +78,10 @@ class ArchivesState {
 
             if let currentIndex = items.firstIndex(where: { $0.url == url }) {
                 switch result {
-                case .success(let destination):
-                    items[currentIndex].status = .success(destination: destination)
-                case .failure(let error):
-                    items[currentIndex].status = .error(error.localizedDescription)
+                    case .success(let destination):
+                        items[currentIndex].status = .success(destination: destination)
+                    case .failure(let error):
+                        items[currentIndex].status = .error(error.localizedDescription)
                 }
             }
 
@@ -93,7 +94,7 @@ class ArchivesState {
         let destination = url.deletingLastPathComponent()
             .appendingPathComponent(url.deletingPathExtension().lastPathComponent)
 
-        return await createDestinationDirectory(destination)
+        let result = await createDestinationDirectory(destination)
             .flatMapAsync { _ in
                 await ArchiveRegistry.extractor(for: url)
                     .flatMapAsync { extractor in
@@ -101,6 +102,12 @@ class ArchivesState {
                     }
             }
             .map { destination.path }
+
+        if case .success = result, deleteAfterExtraction {
+            try? FileManager.default.removeItem(at: url)
+        }
+
+        return result
     }
 
     private func createDestinationDirectory(_ destination: URL) -> Result<Void, ExtractionError> {

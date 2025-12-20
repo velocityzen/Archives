@@ -1,7 +1,7 @@
 import FP
 import Foundation
 
-struct ExtractorRegistry {
+struct ArchiveRegistry {
     private static let extractors: [any ArchiveExtractor] = [
         ZipExtractor()
     ]

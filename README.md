@@ -19,8 +19,8 @@ A lightweight macOS app for extracting archives. Drop files onto the window or d
 For 7-Zip and RAR support, install the CLI tools via Homebrew:
 
 ```bash
-brew install 7zip
-brew install unrar
+brew install 7-zip
+brew install rar
 ```
 
 The app automatically detects available tools on first launch.

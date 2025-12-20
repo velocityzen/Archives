@@ -2,28 +2,36 @@ import FP
 import Foundation
 
 struct ArchiveRegistry {
-    private static let extractors: [any ArchiveExtractor] = [
-        ZipExtractor()
-    ]
+    static var extractors: [CLIExtractor] {
+        // Preserve order from allTools (compound extensions first)
+        CLITool.allTools.compactMap { tool in
+            guard let detected = CLIToolRegistry.shared.tool(for: tool.identifier),
+                detected.isAvailable
+            else {
+                return nil
+            }
+            return CLIExtractor(tool: detected)
+        }
+    }
 
-    static func extractor(for url: URL) -> Result<any ArchiveExtractor, ExtractionError> {
-        let ext = url.pathExtension
+    static func extractor(for url: URL) -> Result<CLIExtractor, ExtractionError> {
+        let filename = url.lastPathComponent
         return .fromOptional(
-            extractors.first { type(of: $0).canHandle(extension: ext) },
-            error: .unsupportedFormat(ext)
+            extractors.first { $0.canHandle(filename: filename) },
+            error: .unsupportedFormat(url.pathExtension)
         )
     }
 
     static var supportedExtensions: [String] {
-        extractors.flatMap { type(of: $0).fileExtensions }
+        extractors.flatMap { $0.fileExtensions }
     }
 
     static var supportedContentTypes: [String] {
-        extractors.flatMap { type(of: $0).contentTypes }
+        extractors.flatMap { $0.contentTypes }
     }
 
     static func isSupported(url: URL) -> Bool {
-        let ext = url.pathExtension
-        return extractors.contains { type(of: $0).canHandle(extension: ext) }
+        let filename = url.lastPathComponent
+        return extractors.contains { $0.canHandle(filename: filename) }
     }
 }

@@ -37,7 +37,7 @@ struct ArchiveView: View {
 
     private var idleView: some View {
         VStack(spacing: 16) {
-            Image(systemName: "doc.zipper")
+            Image(systemName: "archivebox")
                 .font(.system(size: 48))
                 .foregroundStyle(.secondary)
                 .scaleEffect(isTargeted ? 1.15 : 1.0)

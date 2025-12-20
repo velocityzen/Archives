@@ -4,6 +4,10 @@ import SwiftUI
 struct ArchivesApp: App {
     @State private var state = ArchivesState()
 
+    init() {
+        CLIToolRegistry.shared.scanIfNeeded()
+    }
+
     var body: some Scene {
         WindowGroup {
             ArchiveView(state: state)

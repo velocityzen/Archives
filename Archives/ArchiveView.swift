@@ -10,13 +10,13 @@ struct ArchiveView: View {
                 idleView
             } else {
                 queueView
-                .safeAreaPadding(.top, 28)
+                    .safeAreaPadding(.top, 28)
             }
         }
         .frame(minWidth: 250, minHeight: 200)
         .background {
             VisualEffectView(
-                material: .hudWindow,
+                material: .menu,
                 blendingMode: .behindWindow
             )
             .overlay(isTargeted ? Color.accentColor.opacity(0.1) : Color.clear)
@@ -54,22 +54,8 @@ struct ArchiveView: View {
             if let current = state.currentItem {
                 currentItemView(current)
                     .padding()
-            }
-
-            if state.items.count > 1 {
-                Divider()
-
-                ScrollView {
-                    LazyVStack(spacing: 0) {
-                        ForEach(state.items.filter { $0.status != .extracting }) { item in
-                            queueItemRow(item)
-                            Divider()
-                        }
-                    }
-                }
-            }
-
-            if state.hasCompleted && !state.hasErrors {
+                    .frame(maxWidth: .infinity, maxHeight: .infinity)
+            } else if state.hasCompleted && !state.hasErrors {
                 HStack {
                     Image(systemName: "checkmark.circle.fill")
                         .foregroundStyle(.green)
@@ -77,7 +63,21 @@ struct ArchiveView: View {
                         .font(.caption)
                         .foregroundStyle(.secondary)
                 }
-                .padding()
+                .frame(maxWidth: .infinity, maxHeight: .infinity)
+            }
+
+            if state.items.count > 1 {
+                Divider()
+
+                ScrollView {
+                    LazyVStack(spacing: 0) {
+                        ForEach(state.items.filter { $0.status != .extracting }.reversed()) {
+                            item in
+                            queueItemRow(item)
+                            Divider()
+                        }
+                    }
+                }
             }
         }
     }

@@ -2,12 +2,14 @@ import SwiftUI
 
 struct SettingsView: View {
     @AppStorage("deleteAfterExtraction") private var deleteAfterExtraction = false
+    @AppStorage("quitAfterExtraction") private var quitAfterExtraction = false
     @State private var tools: [CLITool] = []
 
     var body: some View {
         Form {
-            Section {
-                Toggle("Delete archive after successful extraction", isOn: $deleteAfterExtraction)
+            Section("After successful extraction") {
+                Toggle("Delete archive", isOn: $deleteAfterExtraction)
+                Toggle("Quit app", isOn: $quitAfterExtraction)
             }
 
             Section("Detected Tools") {

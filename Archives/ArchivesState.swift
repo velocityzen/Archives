@@ -146,8 +146,16 @@ class ArchivesState {
         }
     }
 
+    private var isSettingsWindowOpen: Bool {
+        NSApplication.shared.windows.contains {
+            $0.identifier?.rawValue == "com_apple_SwiftUI_Settings_window"
+        }
+    }
+
     private func didProcessQueue() {
-        guard quitAfterExtraction && hasCompleted && !hasErrors else { return }
+        guard quitAfterExtraction && hasCompleted && !hasErrors && !isSettingsWindowOpen else {
+            return
+        }
 
         Task {
             try? await Task.sleep(for: .seconds(3))

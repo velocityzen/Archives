@@ -32,6 +32,10 @@ class ArchivesState {
         items.filter { $0.status == .pending }.count
     }
 
+    var hasMutliple: Bool {
+        items.count > 1
+    }
+
     var hasCompleted: Bool {
         !items.isEmpty
             && items.allSatisfy {

@@ -49,24 +49,29 @@ struct ArchiveView: View {
         .padding(32)
     }
 
+    private var headerHight: CGFloat {
+        state.hasMutliple ? 100 : .infinity
+    }
+
     private var queueView: some View {
         VStack(spacing: 0) {
-            if let current = state.currentItem {
-                currentItemView(current)
-                    .padding()
-                    .frame(maxWidth: .infinity, maxHeight: .infinity)
-            } else if state.hasCompleted && !state.hasErrors {
-                HStack {
-                    Image(systemName: "checkmark.circle.fill")
-                        .foregroundStyle(.green)
-                    Text("All files extracted")
-                        .font(.caption)
-                        .foregroundStyle(.secondary)
-                }
-                .frame(maxWidth: .infinity, maxHeight: .infinity)
-            }
+            Group {
+                if let current = state.currentItem {
+                    currentItemView(current)
+                } else if state.hasCompleted && !state.hasErrors {
+                    HStack {
+                        Image(systemName: "checkmark.circle.fill")
+                            .foregroundStyle(.green)
+                        Text("All files extracted")
+                            .font(.caption)
+                            .foregroundStyle(.secondary)
+                    }
 
-            if state.items.count > 1 {
+                }
+            }
+            .frame(maxWidth: .infinity, maxHeight: headerHight)
+
+            if state.hasMutliple {
                 Divider()
 
                 ScrollView {
@@ -83,9 +88,8 @@ struct ArchiveView: View {
     }
 
     private func currentItemView(_ item: ArchiveItem) -> some View {
-        VStack(spacing: 12) {
+        VStack(spacing: 4) {
             ProgressView()
-                .scaleEffect(1.2)
 
             Text("Extracting \(item.filename)")
                 .font(.headline)
@@ -98,7 +102,6 @@ struct ArchiveView: View {
                     .foregroundStyle(.secondary)
             }
         }
-        .frame(maxWidth: .infinity)
     }
 
     private func queueItemRow(_ item: ArchiveItem) -> some View {

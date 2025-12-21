@@ -90,6 +90,30 @@
                 <string>org.tukaani.xz-tar-archive</string>
             </array>
         </dict>
+        <dict>
+            <key>CFBundleTypeName</key>
+            <string>Gzip Compressed File</string>
+            <key>CFBundleTypeRole</key>
+            <string>Viewer</string>
+            <key>LSHandlerRank</key>
+            <string>Alternate</string>
+            <key>LSItemContentTypes</key>
+            <array>
+                <string>org.gnu.gnu-zip-archive</string>
+            </array>
+        </dict>
+        <dict>
+            <key>CFBundleTypeName</key>
+            <string>Bzip2 Compressed File</string>
+            <key>CFBundleTypeRole</key>
+            <string>Viewer</string>
+            <key>LSHandlerRank</key>
+            <string>Alternate</string>
+            <key>LSItemContentTypes</key>
+            <array>
+                <string>public.bzip2-archive</string>
+            </array>
+        </dict>
     </array>
     <key>UTImportedTypeDeclarations</key>
     <array>
@@ -195,6 +219,26 @@
                 </array>
                 <key>public.mime-type</key>
                 <string>application/x-xz</string>
+            </dict>
+        </dict>
+        <dict>
+            <key>UTTypeIdentifier</key>
+            <string>org.gnu.gnu-zip-archive</string>
+            <key>UTTypeDescription</key>
+            <string>Gzip Compressed File</string>
+            <key>UTTypeConformsTo</key>
+            <array>
+                <string>public.data</string>
+                <string>public.archive</string>
+            </array>
+            <key>UTTypeTagSpecification</key>
+            <dict>
+                <key>public.filename-extension</key>
+                <array>
+                    <string>gz</string>
+                </array>
+                <key>public.mime-type</key>
+                <string>application/gzip</string>
             </dict>
         </dict>
     </array>

@@ -2,6 +2,7 @@ import SwiftUI
 
 @main
 struct ArchivesApp: App {
+    @NSApplicationDelegateAdaptor(AppDelegate.self) var appDelegate
     @State private var state = ArchivesState()
 
     init() {
@@ -9,8 +10,11 @@ struct ArchivesApp: App {
     }
 
     var body: some Scene {
-        WindowGroup {
+        Window("Archives", id: "main") {
             ArchiveView(state: state)
+                .onAppear {
+                    appDelegate.state = state
+                }
                 .onOpenURL { url in
                     state.enqueue(url)
                 }

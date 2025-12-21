@@ -28,8 +28,18 @@ struct CLIExtractor {
 
         let args = tool.buildArguments(source: source.path, destination: destination.path)
 
-        return
-            await Result
+        if tool.outputToStdout {
+            return await extractToStdout(
+                toolPath: toolPath, args: args, source: source, destination: destination)
+        }
+
+        return await runExtraction(toolPath: toolPath, args: args)
+    }
+
+    private func runExtraction(toolPath: String, args: [String]) async -> Result<
+        Void, ExtractionError
+    > {
+        await Result
             .fromAsync {
                 try await run(
                     .path(FilePath(toolPath)),
@@ -52,6 +62,55 @@ struct CLIExtractor {
                 }
                 return .success(())
             }
+    }
+
+    private func extractToStdout(toolPath: String, args: [String], source: URL, destination: URL)
+        async -> Result<Void, ExtractionError>
+    {
+        let outputFilename = source.deletingPathExtension().lastPathComponent
+        let outputFilePath = FilePath(destination.appendingPathComponent(outputFilename).path)
+
+        return await openFileForWriting(outputFilePath)
+            .flatMapAsync { outputFile in
+                await Result
+                    .fromAsync {
+                        try await run(
+                            .path(FilePath(toolPath)),
+                            arguments: Arguments(args),
+                            output: .fileDescriptor(outputFile, closeAfterSpawningProcess: true),
+                            error: .string(limit: 4096)
+                        )
+                    }
+                    .mapError { error in
+                        try? outputFile.close()
+                        try? FileManager.default.removeItem(atPath: outputFilePath.string)
+                        return ExtractionError.fileSystemError(error.localizedDescription)
+                    }
+            }
+            .flatMap { result in
+                guard result.terminationStatus.isSuccess else {
+                    try? FileManager.default.removeItem(atPath: outputFilePath.string)
+                    return .failure(
+                        .processError(
+                            exitCode: result.terminationStatus.exitCode,
+                            message: result.standardError
+                        )
+                    )
+                }
+                return .success(())
+            }
+    }
+
+    private func openFileForWriting(_ path: FilePath) -> Result<FileDescriptor, ExtractionError> {
+        Result {
+            try FileDescriptor.open(
+                path,
+                .writeOnly,
+                options: [.create, .exclusiveCreate],
+                permissions: [.ownerReadWrite, .groupRead, .otherRead]
+            )
+        }
+        .mapError { .fileSystemError($0.localizedDescription) }
     }
 }
 

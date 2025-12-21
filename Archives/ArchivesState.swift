@@ -21,6 +21,7 @@ struct ArchiveItem: Identifiable, Equatable {
 class ArchivesState {
     var items: [ArchiveItem] = []
     @ObservationIgnored @AppStorage("deleteAfterExtraction") var deleteAfterExtraction = false
+    @ObservationIgnored @AppStorage("quitAfterExtraction") var quitAfterExtraction = true
     private var isProcessing = false
 
     var currentItem: ArchiveItem? {
@@ -64,7 +65,7 @@ class ArchivesState {
     private func processQueue() {
         guard !isProcessing else { return }
         guard let index = items.firstIndex(where: { $0.status == .pending }) else {
-            scheduleQuitIfComplete()
+            didProcessQueue()
             return
         }
 
@@ -91,8 +92,9 @@ class ArchivesState {
     }
 
     private func extract(at url: URL) async -> Result<String, ExtractionError> {
-        let destination = url.deletingLastPathComponent()
+        let basePath = url.deletingLastPathComponent()
             .appendingPathComponent(url.deletingPathExtension().lastPathComponent)
+        let destination = uniqueDestination(for: basePath)
 
         let result = await createDestinationDirectory(destination)
             .flatMapAsync { _ in
@@ -110,22 +112,38 @@ class ArchivesState {
         return result
     }
 
-    private func createDestinationDirectory(_ destination: URL) -> Result<Void, ExtractionError> {
+    private func uniqueDestination(for url: URL) -> URL {
         let fileManager = FileManager.default
-        guard !fileManager.fileExists(atPath: destination.path) else {
-            return .success(())
+        guard fileManager.fileExists(atPath: url.path) else {
+            return url
         }
 
+        let directory = url.deletingLastPathComponent()
+        let filename = url.lastPathComponent
+
+        var counter = 1
+        while true {
+            let newName = "\(filename) \(counter)"
+            let newPath = directory.appendingPathComponent(newName)
+            if !fileManager.fileExists(atPath: newPath.path) {
+                return newPath
+            }
+            counter += 1
+        }
+    }
+
+    private func createDestinationDirectory(_ destination: URL) -> Result<Void, ExtractionError> {
         do {
-            try fileManager.createDirectory(at: destination, withIntermediateDirectories: true)
+            try FileManager.default.createDirectory(
+                at: destination, withIntermediateDirectories: true)
             return .success(())
         } catch {
             return .failure(.fileSystemError(error.localizedDescription))
         }
     }
 
-    private func scheduleQuitIfComplete() {
-        guard hasCompleted && !hasErrors else { return }
+    private func didProcessQueue() {
+        guard quitAfterExtraction && hasCompleted && !hasErrors else { return }
 
         Task {
             try? await Task.sleep(for: .seconds(3))

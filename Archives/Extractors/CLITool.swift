@@ -8,6 +8,7 @@ struct CLITool: Codable, Equatable {
     let contentTypes: [String]
     let arguments: [String]
     let installHint: String
+    let outputToStdout: Bool
     var detectedPath: String?
 
     var isAvailable: Bool { detectedPath != nil }
@@ -17,6 +18,28 @@ struct CLITool: Codable, Equatable {
             arg.replacingOccurrences(of: "{{source}}", with: source)
                 .replacingOccurrences(of: "{{destination}}", with: destination)
         }
+    }
+
+    init(
+        identifier: String,
+        command: String,
+        name: String,
+        fileExtensions: [String],
+        contentTypes: [String],
+        arguments: [String],
+        installHint: String,
+        outputToStdout: Bool = false,
+        detectedPath: String? = nil
+    ) {
+        self.identifier = identifier
+        self.command = command
+        self.name = name
+        self.fileExtensions = fileExtensions
+        self.contentTypes = contentTypes
+        self.arguments = arguments
+        self.installHint = installHint
+        self.outputToStdout = outputToStdout
+        self.detectedPath = detectedPath
     }
 
     static let ditto = CLITool(
@@ -89,10 +112,32 @@ struct CLITool: Codable, Equatable {
         installHint: "tar is a built-in macOS tool"
     )
 
+    static let gzip = CLITool(
+        identifier: "gz",
+        command: "gunzip",
+        name: "Gzip Compressed File",
+        fileExtensions: ["gz"],
+        contentTypes: ["org.gnu.gnu-zip-archive"],
+        arguments: ["-c", "{{source}}"],
+        installHint: "gunzip is a built-in macOS tool",
+        outputToStdout: true
+    )
+
+    static let bzip2 = CLITool(
+        identifier: "bz2",
+        command: "bunzip2",
+        name: "Bzip2 Compressed File",
+        fileExtensions: ["bz2"],
+        contentTypes: ["public.bzip2-archive"],
+        arguments: ["-c", "{{source}}"],
+        installHint: "bunzip2 is a built-in macOS tool",
+        outputToStdout: true
+    )
+
     // Order matters: compound extensions first, then simple ones
     static let allTools: [CLITool] = [
         .tarGz, .tarBz2, .tarXz,
-        .ditto, .sevenZip, .unrar, .tar,
+        .ditto, .sevenZip, .unrar, .tar, .gzip, .bzip2,
     ]
 }
 

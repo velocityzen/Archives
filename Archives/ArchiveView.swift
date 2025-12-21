@@ -10,7 +10,7 @@ struct ArchiveView: View {
                 idleView
             } else {
                 queueView
-                    .safeAreaPadding(.top, 28)
+                    .safeAreaPadding(.top, 32)
             }
         }
         .frame(minWidth: 250, minHeight: 200)
@@ -83,6 +83,7 @@ struct ArchiveView: View {
                         }
                     }
                 }
+                .scrollEdgeEffectStyle(.soft, for: .all)
             }
         }
     }

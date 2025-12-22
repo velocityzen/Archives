@@ -52,17 +52,7 @@ struct CLIExtractor {
             .mapError {
                 ExtractionError.processError(exitCode: 1, message: $0.localizedDescription)
             }
-            .flatMap { result in
-                guard result.terminationStatus.isSuccess else {
-                    return .failure(
-                        .processError(
-                            exitCode: result.terminationStatus.exitCode,
-                            message: result.standardError
-                        )
-                    )
-                }
-                return .success(())
-            }
+            .flatMap { $0.toResult() }
     }
 
     @concurrent
@@ -70,7 +60,8 @@ struct CLIExtractor {
         async -> Result<Void, ExtractionError>
     {
         let outputFilename = source.deletingPathExtension().lastPathComponent
-        let outputFilePath = FilePath(destination.appendingPathComponent(outputFilename).path)
+        let outputFileURL = destination.appendingPathComponent(outputFilename)
+        let outputFilePath = FilePath(outputFileURL.path)
 
         return await openFileForWriting(outputFilePath)
             .flatMapAsync { outputFile in
@@ -85,21 +76,12 @@ struct CLIExtractor {
                     }
                     .mapError { error in
                         try? outputFile.close()
-                        try? FileManager.default.removeItem(atPath: outputFilePath.string)
-                        return ExtractionError.fileSystemError(error.localizedDescription)
+                        return ExtractionError.fileSystemError(error)
                     }
             }
-            .flatMap { result in
-                guard result.terminationStatus.isSuccess else {
-                    try? FileManager.default.removeItem(atPath: outputFilePath.string)
-                    return .failure(
-                        .processError(
-                            exitCode: result.terminationStatus.exitCode,
-                            message: result.standardError
-                        )
-                    )
-                }
-                return .success(())
+            .flatMap { $0.toResult() }
+            .tapError { _ in
+                removeFile(at: outputFileURL)
             }
     }
 
@@ -112,14 +94,14 @@ struct CLIExtractor {
                 permissions: [.ownerReadWrite, .groupRead, .otherRead]
             )
         }
-        .mapError { .fileSystemError($0.localizedDescription) }
+        .mapError { .fileSystemError($0) }
     }
 }
 
-enum ExtractionError: LocalizedError, Equatable {
+enum ExtractionError: LocalizedError {
     case unsupportedFormat(String)
     case processError(exitCode: Int32, message: String?)
-    case fileSystemError(String)
+    case fileSystemError(Error)
 
     var errorDescription: String? {
         switch self {
@@ -130,8 +112,8 @@ enum ExtractionError: LocalizedError, Equatable {
                     return message.trimmingCharacters(in: .whitespacesAndNewlines)
                 }
                 return "Process failed with exit code \(exitCode)"
-            case .fileSystemError(let message):
-                return message
+            case .fileSystemError(let error):
+                return error.localizedDescription
         }
     }
 }
@@ -144,5 +126,19 @@ extension TerminationStatus {
             default:
                 return -1
         }
+    }
+}
+
+extension CollectedResult where Error.OutputType == String? {
+    nonisolated func toResult() -> Result<Void, ExtractionError> {
+        guard terminationStatus.isSuccess else {
+            return .failure(
+                .processError(
+                    exitCode: terminationStatus.exitCode,
+                    message: standardError
+                )
+            )
+        }
+        return .success(())
     }
 }

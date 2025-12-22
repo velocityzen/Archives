@@ -102,15 +102,11 @@ class ArchivesState {
     private func extract(at url: URL, deleteAfterExtraction: Bool) async -> Result<
         String, ExtractionError
     > {
-        let extractor = await Task { @MainActor in
-            ArchiveRegistry.extractor(for: url)
-        }.value
-
         let basePath = url.deletingLastPathComponent()
             .appendingPathComponent(url.deletingPathExtension().lastPathComponent)
         let destination = uniqueDestination(for: basePath)
 
-        return await createDestinationDirectory(destination)
+        return await createDirectory(at: destination)
             .flatMapAsync {
                 await Task { @MainActor in
                     ArchiveRegistry.extractor(for: url)
@@ -121,57 +117,12 @@ class ArchivesState {
             }
             .tap {
                 if deleteAfterExtraction {
-                    removeFile(url)
+                    removeFile(at: url)
                 } else {
                     .success(())
                 }
             }
             .map { destination.path }
-    }
-
-    nonisolated
-        private func uniqueDestination(for url: URL) -> URL
-    {
-        let fileManager = FileManager.default
-        guard fileManager.fileExists(atPath: url.path) else {
-            return url
-        }
-
-        let directory = url.deletingLastPathComponent()
-        let filename = url.lastPathComponent
-
-        var counter = 1
-        while true {
-            let newName = "\(filename) \(counter)"
-            let newPath = directory.appendingPathComponent(newName)
-            if !fileManager.fileExists(atPath: newPath.path) {
-                return newPath
-            }
-            counter += 1
-        }
-    }
-
-    nonisolated
-        private func createDestinationDirectory(_ destination: URL) -> Result<Void, ExtractionError>
-    {
-        do {
-            try FileManager.default.createDirectory(
-                at: destination, withIntermediateDirectories: true)
-            return .success(())
-        } catch {
-            return .failure(.fileSystemError(error.localizedDescription))
-        }
-    }
-
-    nonisolated
-        private func removeFile(_ url: URL) -> Result<Void, ExtractionError>
-    {
-        do {
-            try FileManager.default.removeItem(at: url)
-            return .success(())
-        } catch {
-            return .failure(.fileSystemError(error.localizedDescription))
-        }
     }
 
     private var isSettingsWindowOpen: Bool {

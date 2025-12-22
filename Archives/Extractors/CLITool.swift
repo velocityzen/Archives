@@ -1,5 +1,6 @@
 import Foundation
 
+nonisolated
 struct CLITool: Codable, Equatable {
     let identifier: String
     let command: String

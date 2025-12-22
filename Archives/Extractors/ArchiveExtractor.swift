@@ -36,6 +36,7 @@ struct CLIExtractor {
         return await runExtraction(toolPath: toolPath, args: args)
     }
 
+    @concurrent
     private func runExtraction(toolPath: String, args: [String]) async -> Result<
         Void, ExtractionError
     > {
@@ -64,6 +65,7 @@ struct CLIExtractor {
             }
     }
 
+    @concurrent
     private func extractToStdout(toolPath: String, args: [String], source: URL, destination: URL)
         async -> Result<Void, ExtractionError>
     {
@@ -135,7 +137,7 @@ enum ExtractionError: LocalizedError, Equatable {
 }
 
 extension TerminationStatus {
-    var exitCode: Int32 {
+    nonisolated var exitCode: Int32 {
         switch self {
             case .exited(let code):
                 return code

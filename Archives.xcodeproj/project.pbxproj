@@ -34,9 +34,22 @@
 		270FDA7A2EF70204002E835A /* ArchivesUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = ArchivesUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
+/* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
+		2730A5952EF8F8D300B0B408 /* Exceptions for "Archives" folder in "Archives" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				Info.plist,
+			);
+			target = 270FDA622EF70203002E835A /* Archives */;
+		};
+/* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
+
 /* Begin PBXFileSystemSynchronizedRootGroup section */
 		270FDA652EF70203002E835A /* Archives */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				2730A5952EF8F8D300B0B408 /* Exceptions for "Archives" folder in "Archives" target */,
+			);
 			path = Archives;
 			sourceTree = "<group>";
 		};

@@ -12,5 +12,16 @@
 
         <!-- new first -->
 
+  <item>
+      <title>Version 0.0.6</title>
+      <sparkle:version>0.0.6</sparkle:version>
+      <pubDate>Fri, 26 Dec 2025 20:43:38 +0000</pubDate>
+      <sparkle:minimumSystemVersion>15.0</sparkle:minimumSystemVersion>
+      <enclosure
+          url="https://github.com/velocityzen/Archives/releases/download/0.0.6/Archives.dmg"
+          sparkle:edSignature="k5nFvEwX5c6E637Lo7Lrzo3MkxICNIuxTFRsH2kdC8QPsTogj1lxF5jXd82Bom2Fg2adRFjdnlVBpcafQwtLAA==" length="3304303"
+          type="application/octet-stream" />
+  </item>
+
     </channel>
 </rss>

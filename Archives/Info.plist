@@ -3,6 +3,10 @@
     "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
+    <key>SUFeedURL</key>
+    <string>https://velocityzen.github.io/Archives/appcast.xml</string>
+    <key>SUPublicEDKey</key>
+    <string>866uiQmcnZrZZJ9XFLYosyRbjOSFsAFrTdUNzctdFsw=</string>
     <key>CFBundleDocumentTypes</key>
     <array>
         <dict>

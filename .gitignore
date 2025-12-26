@@ -1,0 +1,73 @@
+# Xcode
+build/
+DerivedData/
+*.xcodeproj/xcuserdata/
+*.xcworkspace/xcuserdata/
+*.xcodeproj/project.xcworkspace/xcuserdata/
+
+# User-specific project settings
+*.xcuserstate
+*.xcuserdatad/
+xcuserdata/
+
+# Build products
+*.ipa
+*.dSYM.zip
+*.dSYM
+
+# Dependency management
+Carthage/Build/
+Carthage/Checkouts/
+.build/
+Packages/
+Package.resolved
+*.xcframework
+
+# CocoaPods
+Pods/
+Podfile.lock
+
+# Swift Package Manager
+.swiftpm/
+
+# AppCode
+.idea/
+
+# Fastlane
+fastlane/report.xml
+fastlane/Preview.html
+fastlane/screenshots/**/*.png
+fastlane/test_output
+
+# Code coverage
+*.gcno
+*.gcda
+*.profdata
+*.profraw
+
+# Playgrounds
+timeline.xctimeline
+playground.xcworkspace
+
+# OS generated files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Backup files
+*~
+*.orig
+*.bak
+
+# Local configuration
+*.xcconfig.local
+
+# Secrets
+.github/.secrets
+*.secrets
+.env
+.env.*

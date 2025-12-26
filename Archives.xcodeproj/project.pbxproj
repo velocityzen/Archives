@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		270B111E2EFF25EF0074B743 /* Sparkle in Frameworks */ = {isa = PBXBuildFile; productRef = 270B111D2EFF25EF0074B743 /* Sparkle */; };
 		270FDB342EF70529002E835A /* Subprocess in Frameworks */ = {isa = PBXBuildFile; productRef = 270FDA8E2EF70300002E835A /* Subprocess */; };
 		270FDB352EF70529002E835A /* FP in Frameworks */ = {isa = PBXBuildFile; productRef = 270FDA902EF70400002E835A /* FP */; };
 /* End PBXBuildFile section */
@@ -70,6 +71,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				270B111E2EFF25EF0074B743 /* Sparkle in Frameworks */,
 				270FDB352EF70529002E835A /* FP in Frameworks */,
 				270FDB342EF70529002E835A /* Subprocess in Frameworks */,
 			);
@@ -134,6 +136,7 @@
 			packageProductDependencies = (
 				270FDA8E2EF70300002E835A /* Subprocess */,
 				270FDA902EF70400002E835A /* FP */,
+				270B111D2EFF25EF0074B743 /* Sparkle */,
 			);
 			productName = Archives;
 			productReference = 270FDA632EF70203002E835A /* Archives.app */;
@@ -220,6 +223,7 @@
 			packageReferences = (
 				270FDA8D2EF70300002E835A /* XCRemoteSwiftPackageReference "swift-subprocess" */,
 				270FDA8F2EF70400002E835A /* XCRemoteSwiftPackageReference "fp-swift" */,
+				270B111C2EFF25EF0074B743 /* XCRemoteSwiftPackageReference "Sparkle" */,
 			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = 270FDA642EF70203002E835A /* Products */;
@@ -613,6 +617,14 @@
 /* End XCConfigurationList section */
 
 /* Begin XCRemoteSwiftPackageReference section */
+		270B111C2EFF25EF0074B743 /* XCRemoteSwiftPackageReference "Sparkle" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/sparkle-project/Sparkle";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 2.8.1;
+			};
+		};
 		270FDA8D2EF70300002E835A /* XCRemoteSwiftPackageReference "swift-subprocess" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/swiftlang/swift-subprocess.git";
@@ -632,6 +644,11 @@
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
+		270B111D2EFF25EF0074B743 /* Sparkle */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 270B111C2EFF25EF0074B743 /* XCRemoteSwiftPackageReference "Sparkle" */;
+			productName = Sparkle;
+		};
 		270FDA8E2EF70300002E835A /* Subprocess */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = 270FDA8D2EF70300002E835A /* XCRemoteSwiftPackageReference "swift-subprocess" */;

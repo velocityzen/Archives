@@ -20,6 +20,11 @@ struct ArchivesApp: App {
                 }
         }
         .windowResizability(.contentSize)
+        .commands {
+          CommandGroup(after: .appInfo) {
+            CheckForUpdatesView()
+          }
+        }
 
         Settings {
             SettingsView()

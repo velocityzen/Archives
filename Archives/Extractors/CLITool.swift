@@ -1,7 +1,8 @@
 import Foundation
 
 nonisolated
-struct CLITool: Codable, Equatable {
+    struct CLITool: Codable, Equatable
+{
     let identifier: String
     let command: String
     let name: String
@@ -151,22 +152,6 @@ class CLIToolRegistry {
 
     private(set) var tools: [String: CLITool] = [:]
 
-    private lazy var searchPaths: [String] = {
-        let path = ProcessInfo.processInfo.environment["PATH"] ?? ""
-        var paths = path.split(separator: ":").map(String.init)
-        // Add common paths that might not be in PATH for GUI apps
-        let commonPaths = [
-            "/opt/homebrew/bin",
-            "/usr/local/bin",
-            "/usr/bin",
-            "/bin",
-        ]
-        for p in commonPaths where !paths.contains(p) {
-            paths.append(p)
-        }
-        return paths
-    }()
-
     private init() {
         loadFromDefaults()
     }
@@ -181,10 +166,20 @@ class CLIToolRegistry {
     }
 
     func scan() {
-        let fileManager = FileManager.default
+        let path = ProcessInfo.processInfo.environment["PATH"] ?? ""
+        var searchPaths = path.split(separator: ":").map(String.init)
+        // Add common paths that might not be in PATH for GUI apps
+        let commonPaths = [
+            "/opt/homebrew/bin",
+            "/usr/local/bin",
+            "/usr/bin",
+        ]
+        for p in commonPaths where !searchPaths.contains(p) {
+            searchPaths.append(p)
+        }
 
         for var tool in CLITool.allTools {
-            tool.detectedPath = findExecutable(named: tool.command, using: fileManager)
+            tool.detectedPath = findExecutable(named: tool.command, in: searchPaths)
             tools[tool.identifier] = tool
         }
 
@@ -198,16 +193,6 @@ class CLIToolRegistry {
 
     func path(for identifier: String) -> String? {
         tools[identifier]?.detectedPath
-    }
-
-    private func findExecutable(named command: String, using fileManager: FileManager) -> String? {
-        for dir in searchPaths {
-            let path = (dir as NSString).appendingPathComponent(command)
-            if fileManager.isExecutableFile(atPath: path) {
-                return path
-            }
-        }
-        return nil
     }
 
     private func loadFromDefaults() {

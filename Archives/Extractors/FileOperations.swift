@@ -41,3 +41,14 @@ nonisolated func removeFile(at url: URL) -> Result<Void, ExtractionError> {
         return .failure(.fileSystemError(error))
     }
 }
+
+nonisolated func findExecutable(named command: String, in searchPaths: [String]) -> String? {
+    let fileManager = FileManager.default
+    for dir in searchPaths {
+        let path = (dir as NSString).appendingPathComponent(command)
+        if fileManager.isExecutableFile(atPath: path) {
+            return path
+        }
+    }
+    return nil
+}

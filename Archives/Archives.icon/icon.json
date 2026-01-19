@@ -2,8 +2,8 @@
   "color-space-for-untagged-svg-colors" : "display-p3",
   "fill" : {
     "linear-gradient" : [
-      "display-p3:1.00000,0.62702,1.00000,1.00000",
-      "srgb:0.04016,0.75848,0.77788,1.00000"
+      "display-p3:1.00000,0.87220,0.30289,1.00000",
+      "srgb:0.99695,0.75370,0.30981,1.00000"
     ],
     "orientation" : {
       "start" : {
@@ -28,6 +28,7 @@
           "hidden" : false,
           "image-name" : "SVG Image.svg",
           "name" : "SVG Image",
+          "opacity" : 1,
           "position" : {
             "scale" : 4.44,
             "translation-in-points" : [

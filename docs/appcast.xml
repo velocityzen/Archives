@@ -13,6 +13,17 @@
         <!-- new first -->
 
   <item>
+      <title>Version 0.1.0</title>
+      <sparkle:version>0.1.0</sparkle:version>
+      <pubDate>Mon, 19 Jan 2026 22:14:15 +0000</pubDate>
+      <sparkle:minimumSystemVersion>15.0</sparkle:minimumSystemVersion>
+      <enclosure
+          url="https://github.com/velocityzen/Archives/releases/download/0.1.0/Archives.dmg"
+          sparkle:edSignature="cu8HGOvg7sgWCsNkwld8jxzUocudFKXBPQ51R9ywPAuEK8uAoEnD0UvDhkVk/8YHZnos5B4HbGhXOoMkh3psCg==" length="3149511"
+          type="application/octet-stream" />
+  </item>
+
+  <item>
       <title>Version 0.0.6</title>
       <sparkle:version>0.0.6</sparkle:version>
       <pubDate>Fri, 26 Dec 2025 20:43:38 +0000</pubDate>

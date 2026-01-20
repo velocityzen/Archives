@@ -2,6 +2,10 @@
 
 A lightweight macOS app for extracting archives. Drop files onto the window or double-click to extract.
 
+## Download
+
+[Latest DMG from GitHub releases pages](https://github.com/velocityzen/Archives/releases/latest/download/Archives.dmg)
+
 ## Supported Formats
 
 | Format | Extensions | Tool | Built-in |
